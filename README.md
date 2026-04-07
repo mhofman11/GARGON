@@ -4,7 +4,7 @@
 
 GARGON is a personalized reading comprehension system that identifies what an article assumes you already know, determines what you likely don't know yet, and inserts just enough context to keep you reading continuously — without ever leaving the page.
 
-![GARGON v2 — side-by-side layout with article on the left and personalized context sidebar on the right](examples/gargon_preview.png)
+![GARGON v2 — side-by-side layout with article on the left and personalized context sidebar on the right](examples/gargon_demo.png)
 
 ---
 
