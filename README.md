@@ -4,6 +4,25 @@
 
 GARGON is a personalized reading comprehension system that identifies what an article assumes you already know, determines what you likely don't know yet, and inserts just enough context to keep you reading continuously — without ever leaving the page.
 
+![GARGON v2 — side-by-side layout with article on the left and personalized context sidebar on the right](examples/gargon_preview.png)
+
+---
+
+## Quick Start
+
+### For Claude/Cowork users
+
+1. Download [`gargon.skill`](gargon.skill) from this repo (click the file → Download raw file)
+2. Open Claude desktop → Cowork mode
+3. Drag and drop the `.skill` file into Cowork — it installs automatically
+4. Say: *"I want to read an article with GARGON"*
+5. GARGON will run your UMM assessment (~3 min), then ask you to paste an article
+6. You'll get a self-contained HTML file — open it in your browser
+
+### Want to see it in action first?
+
+Download [`examples/demo_output_v2.html`](examples/demo_output_v2.html) and open it in your browser. This is a real GARGON output generated for an article about RAG (Retrieval-Augmented Generation), personalized for a non-technical reader.
+
 ---
 
 ## The Problem
