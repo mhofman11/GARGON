@@ -1,0 +1,30 @@
+{
+  "name": "Michael",
+  "created": "2026-04-06",
+  "last_updated": "2026-04-06",
+  "domain_familiarity": {
+    "computing_fundamentals": 1,
+    "programming_foundations": 1,
+    "data_algorithms": 1,
+    "web_internet": 2,
+    "devops_infrastructure": 1,
+    "ai_ml": 2,
+    "security_privacy": 1,
+    "software_engineering": 1
+  },
+  "formal_literacy": {
+    "code": "low",
+    "math_notation": "low",
+    "diagrams": "low"
+  },
+  "transfer_domains": [
+    {"domain": "personal training/sports", "depth": "professional", "bridges": ["progressive overload → optimization", "recovery → system resilience", "adaptation → learning rates", "feedback loops → iterative processes"]},
+    {"domain": "music", "depth": "some", "bridges": ["pattern recognition", "layered composition → system architecture", "timing → async processes"]},
+    {"domain": "generalist breadth", "depth": "wide surface", "bridges": ["multiple analogy angles available"]}
+  ],
+  "motivation": ["self-improvement", "practical-capability", "financial-growth"],
+  "processing_orientation": "hybrid-concept-first-for-orientation-example-first-for-understanding",
+  "confidence_calibration": -1,
+  "assessment_notes": "Understands concepts better in context of articles than in isolation. Stronger intuition than self-assessment suggests. AI/ML knowledge is contextual not definitional. Web knowledge is functional from daily use. All formal literacy is low — notation translation needed for code, math, and diagrams.",
+  "feedback_history": []
+}

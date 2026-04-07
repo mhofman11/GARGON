@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GARGON — How to Build Your Second Brain</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #fafaf8;
+  }
+
+  /* Header */
+  .gargon-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 2px solid #2c5f2d;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .header-left {
+    flex: 1;
+  }
+  .gargon-header h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c5f2d;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .gargon-header .article-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+  }
+  .gargon-header .meta {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  .gargon-header .meta span {
+    display: inline-block;
+    margin-right: 1.5rem;
+  }
+
+  /* Main layout */
+  .section-row {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  /* GARGON sidebar (right) */
+  .gargon-sidebar {
+    width: 340px;
+    min-width: 340px;
+    padding: 1.25rem 2rem 1.25rem 1.25rem;
+    background: #f0f7f0;
+    border-left: 3px solid #2c5f2d;
+    position: relative;
+    order: 2;
+  }
+  .gargon-sidebar.no-context {
+    background: #f8f8f5;
+    border-left: 3px solid #ccc;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #2c5f2d;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .no-context .section-label {
+    color: #999;
+  }
+
+  /* Mini report header */
+  .mini-report {
+    border: none;
+    background: none;
+    width: 100%;
+  }
+  .mini-report summary {
+    font-size: 0.8rem;
+    color: #333;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.4rem 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .mini-report summary::-webkit-details-marker { display: none; }
+  .mini-report summary::before {
+    content: '▶';
+    font-size: 0.6rem;
+    color: #2c5f2d;
+    transition: transform 0.15s;
+  }
+  .mini-report[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .mini-report summary:hover {
+    color: #2c5f2d;
+  }
+
+  .report-stats {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 400;
+  }
+  .need-score {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: 0.25rem;
+  }
+  .need-1 { background: #e8f5e9; color: #2e7d32; }
+  .need-2 { background: #e8f5e9; color: #2e7d32; }
+  .need-3 { background: #fff8e1; color: #f57f17; }
+  .need-4 { background: #fff3e0; color: #e65100; }
+  .need-5 { background: #fce4ec; color: #c62828; }
+
+  .no-context-msg {
+    font-size: 0.82rem;
+    color: #999;
+    font-style: italic;
+    padding: 0.5rem 0;
+  }
+
+  /* Entries inside the collapsible */
+  .entries {
+    padding-top: 0.5rem;
+  }
+  .entry {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #d5e8d5;
+  }
+  .entry:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+  }
+  .entry-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #2c5f2d;
+  }
+  .entry-type {
+    font-size: 0.6rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .scaffold {
+    font-size: 0.82rem;
+    color: #333;
+    line-height: 1.55;
+    margin-bottom: 0.4rem;
+  }
+  .scaffold code {
+    background: #e0ece0;
+    padding: 0.1rem 0.25rem;
+    border-radius: 2px;
+    font-size: 0.78rem;
+    font-family: 'Menlo', 'Consolas', monospace;
+  }
+
+  /* Depth dropdown */
+  .depth-toggle {
+    margin-bottom: 0.3rem;
+  }
+  .depth-toggle summary {
+    font-size: 0.75rem;
+    color: #2c5f2d;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.15rem 0;
+  }
+  .depth-toggle summary:hover { color: #1a4a1c; }
+  .depth-content {
+    font-size: 0.78rem;
+    color: #555;
+    line-height: 1.55;
+    padding: 0.4rem 0 0.2rem 0;
+    border-left: 2px solid #d5e8d5;
+    padding-left: 0.6rem;
+    margin-top: 0.2rem;
+  }
+
+  /* Feedback buttons */
+  .feedback-buttons {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+  }
+  .feedback-buttons button {
+    font-size: 0.62rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.15s;
+  }
+  .feedback-buttons button:hover { border-color: #2c5f2d; color: #2c5f2d; }
+  .feedback-buttons button.active-a { background: #fee; border-color: #c66; color: #c66; }
+  .feedback-buttons button.active-b { background: #fef8e6; border-color: #c90; color: #b80; }
+  .feedback-buttons button.active-c { background: #efd; border-color: #2c5f2d; color: #2c5f2d; }
+
+  /* Article content (left) */
+  .article-panel {
+    flex: 1;
+    padding: 1.5rem 2rem 1.5rem 2rem;
+    min-width: 0;
+    order: 1;
+  }
+  .article-panel h2 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+    color: #1a1a1a;
+    font-size: 1.25rem;
+  }
+  .article-panel p {
+    margin-bottom: 0.9rem;
+    font-size: 0.95rem;
+  }
+  .article-panel pre {
+    background: #f5f5f0;
+    padding: 0.9rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 0.8rem 0;
+    font-size: 0.84rem;
+    font-family: 'Menlo', 'Consolas', monospace;
+    line-height: 1.5;
+  }
+  .article-panel code {
+    background: #f5f5f0;
+    padding: 0.1rem 0.25rem;
+    border-radius: 3px;
+    font-size: 0.84rem;
+    font-family: 'Menlo', 'Consolas', monospace;
+  }
+  .article-panel ol, .article-panel ul {
+    margin-left: 1.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .article-panel li { margin-bottom: 0.25rem; font-size: 0.95rem; }
+  .article-panel strong { font-weight: 700; }
+  .article-panel em { font-style: italic; }
+
+  /* Highlighted terms in article */
+  .gargon-term {
+    background: linear-gradient(to bottom, transparent 60%, #c8e6c9 60%);
+    padding: 0 1px;
+    cursor: help;
+    border-bottom: 1px dotted #2c5f2d;
+  }
+  .gargon-term:hover {
+    background: #c8e6c9;
+  }
+
+  /* Friction heatmap */
+  .friction-heatmap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  .friction-visual {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .friction-doc-svg {
+    flex-shrink: 0;
+  }
+  .friction-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: 0.65rem;
+    color: #888;
+    line-height: 1.3;
+  }
+  .friction-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .friction-legend-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+  /* Tone toggle */
+  .tone-toggle-wrap {
+    position: fixed;
+    top: 1rem;
+    right: 1.5rem;
+    z-index: 1000;
+    background: rgba(250, 250, 248, 0.92);
+    backdrop-filter: blur(6px);
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .tone-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    color: #888;
+    user-select: none;
+  }
+  .tone-toggle label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .tone-switch {
+    position: relative;
+    width: 34px;
+    height: 18px;
+    display: inline-block;
+  }
+  .tone-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .tone-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #ccc;
+    border-radius: 18px;
+    transition: 0.25s;
+  }
+  .tone-slider::before {
+    content: '';
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    left: 2px;
+    bottom: 2px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.25s;
+  }
+  .tone-switch input:checked + .tone-slider {
+    background: #c2185b;
+  }
+  .tone-switch input:checked + .tone-slider::before {
+    transform: translateX(16px);
+  }
+  .tone-mode-label {
+    font-weight: 600;
+    transition: color 0.25s;
+  }
+  .tone-mode-label.active-formal {
+    color: #2c5f2d;
+  }
+  .tone-mode-label.active-conv {
+    color: #c2185b;
+  }
+
+  /* Conversational mode accent shift */
+  body.conv-mode .gargon-sidebar {
+    background: #fdf0f5;
+    border-left-color: #c2185b;
+  }
+  body.conv-mode .gargon-sidebar.no-context {
+    border-left-color: #e0b0c0;
+  }
+  body.conv-mode .section-label {
+    color: #c2185b;
+  }
+  body.conv-mode .entry-name {
+    color: #c2185b;
+  }
+  body.conv-mode .mini-report summary::before {
+    color: #c2185b;
+  }
+  body.conv-mode .mini-report summary:hover {
+    color: #c2185b;
+  }
+  body.conv-mode .depth-toggle summary {
+    color: #c2185b;
+  }
+  body.conv-mode .depth-toggle summary:hover {
+    color: #9a1045;
+  }
+  body.conv-mode .entry {
+    border-bottom-color: #f0d0e0;
+  }
+  body.conv-mode .depth-content {
+    border-left-color: #f0d0e0;
+  }
+  body.conv-mode .gargon-term {
+    background: linear-gradient(to bottom, transparent 60%, #f8c8dc 60%);
+    border-bottom-color: #c2185b;
+  }
+  body.conv-mode .gargon-term:hover {
+    background: #f8c8dc;
+  }
+  body.conv-mode .gargon-acronym-bar span {
+    color: #d4879e;
+  }
+  body.conv-mode .gargon-acronym-bar strong {
+    color: #c2185b;
+  }
+
+  /* Acronym bar above sidebar */
+  .gargon-acronym-bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.4rem 0 0.15rem;
+  }
+  .gargon-acronym-bar span {
+    width: 340px;
+    padding-left: 1.25rem;
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    color: #5a8a5c;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .gargon-acronym-bar strong {
+    color: #2c5f2d;
+    font-weight: 700;
+    font-size: 0.55rem;
+  }
+
+  /* Footer */
+  .gargon-footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    border-top: 2px solid #2c5f2d;
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .section-row {
+      flex-direction: column;
+    }
+    .gargon-sidebar {
+      width: 100%;
+      min-width: unset;
+      border-left: none;
+      border-top: 3px solid #2c5f2d;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="gargon-header">
+  <div class="header-left">
+    <h1>GARGON</h1>
+    <div class="article-title">How to Build Your Second Brain</div>
+    <div class="meta">
+      <span>Prepared for Michael</span>
+      <span>19 bridging concepts</span>
+      <span>~12 min read with context</span>
+    </div>
+  </div>
+  <div class="friction-heatmap">
+    <div style="font-size:0.6rem;color:#888;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:0.3rem;">Friction Map</div>
+    <div class="friction-visual">
+      <svg class="friction-doc-svg" width="46" height="72" viewBox="0 0 46 72" xmlns="http://www.w3.org/2000/svg">
+        <title>Friction map — top is beginning of article, bottom is end</title>
+        <!-- Page body with folded corner -->
+        <path d="M3 0.5 H34 L45.5 12 V69 Q45.5 71.5 43 71.5 H3 Q0.5 71.5 0.5 69 V3 Q0.5 0.5 3 0.5 Z" fill="#fff" stroke="#bbb" stroke-width="1"/>
+        <!-- Corner fold -->
+        <path d="M34 0.5 V9.5 Q34 12 36.5 12 H45.5" fill="#eee" stroke="#bbb" stroke-width="1"/>
+        <!-- Section stripes — proportional to article length, colored by friction -->
+        <!-- S1: 18% of article, need 4/5 -->
+        <rect x="5" y="5" width="28" height="10" rx="1" fill="#ff9800"><title>Section 1 — Need 4/5</title></rect>
+        <!-- S2: 10%, need 0 -->
+        <rect x="5" y="16.5" width="28" height="5.5" rx="1" fill="#e8f5e9"><title>Section 2 — No friction</title></rect>
+        <!-- S3: 20%, need 5/5 — largest & reddest -->
+        <rect x="5" y="23.5" width="28" height="11" rx="1" fill="#ef5350"><title>Section 3 — Need 5/5</title></rect>
+        <!-- S4: 15%, need 3/5 -->
+        <rect x="5" y="36" width="28" height="8.5" rx="1" fill="#fff176"><title>Section 4 — Need 3/5</title></rect>
+        <!-- S5: 13%, need 3/5 -->
+        <rect x="5" y="46" width="28" height="7" rx="1" fill="#fff176"><title>Section 5 — Need 3/5</title></rect>
+        <!-- S6: 6%, need 0 -->
+        <rect x="5" y="54.5" width="18" height="3.5" rx="1" fill="#e8f5e9"><title>Section 6 — No friction</title></rect>
+        <!-- S7: 10%, need 2/5 -->
+        <rect x="5" y="59.5" width="28" height="5" rx="1" fill="#a5d6a7"><title>Section 7 — Need 2/5</title></rect>
+        <!-- S8: 8%, need 1/5 -->
+        <rect x="5" y="66" width="22" height="3.5" rx="1" fill="#c8e6c9"><title>Section 8 — Need 1/5</title></rect>
+      </svg>
+      <div class="friction-legend">
+        <div class="friction-legend-item"><span class="friction-legend-swatch" style="background:#ef5350"></span> High</div>
+        <div class="friction-legend-item"><span class="friction-legend-swatch" style="background:#fff176"></span> Mid</div>
+        <div class="friction-legend-item"><span class="friction-legend-swatch" style="background:#a5d6a7"></span> Low</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 1: INTRO + CREATE THREE FOLDERS    -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="tone-toggle-wrap">
+  <div class="tone-toggle">
+    <span class="tone-mode-label active-formal" id="tone-label-standard">Standard</span>
+    <label class="tone-switch">
+      <input type="checkbox" id="tone-checkbox">
+      <span class="tone-slider"></span>
+    </label>
+    <span class="tone-mode-label" id="tone-label-conv" style="color:#aaa">Plain Speak</span>
+  </div>
+</div>
+
+<div class="gargon-acronym-bar"><span><strong>G</strong>uided <strong>A</strong>daptive <strong>R</strong>eduction of <strong>G</strong>aps in <strong>O</strong>perational <strong>N</strong>eeds</span></div>
+
+<div class="section-row">
+  <div class="gargon-sidebar">
+    <div class="section-label">Section 1 · GARGON Context</div>
+    <details class="mini-report">
+      <summary>
+        8 concepts: 1 framework, 3 terms, 1 notation, 2 meaning divergence, 1 recognition gap
+        <span class="report-stats">· Need-to-read <span class="need-score need-4">4/5</span></span>
+      </summary>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Terminal / Command Line</span>
+            <span class="entry-type">framework</span>
+          </div>
+          <div class="scaffold" data-conv="It's a text-only remote control for your computer. Instead of clicking folders and icons, you type short commands and it does what you say. The article assumes you know this already and keeps referring to it.">
+            This article assumes you're comfortable using a "terminal." Think of it as a text-only remote control for your computer. Instead of clicking folders and icons, you type short commands and your computer does what you say. The article mentions it immediately and keeps referring to it throughout.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              The terminal (also called command line, CLI, or shell) is an application on every computer that lets you interact with files and programs by typing text commands. On Mac it's called Terminal; on Windows it's Command Prompt or PowerShell. Developers prefer it because it's faster for repetitive tasks and lets you do things that aren't possible through the normal click-and-drag interface. You don't need to master it to follow this article — just know that when the author says "open your terminal," they mean open this text-based interface.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">.md / Markdown Files</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="Just a text file. A .md file is like a .txt file but with simple formatting shortcuts (# for headings, * for bold). The entire system in this article runs on these plain text files.">
+            When the article says ".md files" or "markdown," it means plain text files with a specific extension. A <code>.md</code> file is just a text file — like a <code>.txt</code> file — but with simple formatting shortcuts (like # for headings and * for bold). The entire system in this article runs on these files.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              Markdown was invented as a way to write formatted text without needing a word processor. Instead of clicking a "Bold" button, you wrap text in asterisks. Instead of selecting a font size for a heading, you put a # in front of it. AI tools love markdown because it's just text — no hidden formatting, no proprietary file formats. When the article mentions <code>INDEX.md</code> or <code>CLAUDE.md</code>, those are just text files with the .md extension that both humans and AI can read.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Folder Structure Diagram</span>
+            <span class="entry-type">notation</span>
+          </div>
+          <div class="scaffold" data-conv="It's not code — it's a visual map of how folders nest inside each other. The main folder is at the top, stuff indented below it is inside it, and a slash at the end means 'this is a folder, not a file.'">
+            You'll see a block that looks like code showing folders with indentation and slashes. It's not code — it's a visual map of how folders nest. <code>my-knowledge-base/</code> is the main folder. Items indented below it are inside it. The slash at the end means "this is a folder, not a file."
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              Developers use this text-based format to show folder layouts because it's quicker than screenshots. The indentation shows nesting — things indented further are deeper inside. The parenthetical notes after each folder are just the author's comments. You'll see this format throughout the article whenever folder structure is referenced.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Wiki</span>
+            <span class="entry-type">recognition gap</span>
+          </div>
+          <div class="scaffold" data-conv="Not Wikipedia — just an organized set of linked pages on one topic. Here it means a folder of text files where each file covers one topic and links to related ones, and the AI maintains the whole thing.">
+            Not related to Wikipedia specifically. A wiki is an organized set of interlinked pages on a topic. In this article, it means a folder of text files where each file covers one topic and links to related ones. The AI builds and maintains it — there's no website, no public access, just organized notes on your computer.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              "Wiki" comes from Hawaiian for "quick." The original WikiWikiWeb (1995) was a website where anyone could edit any page — fast, collaborative knowledge building. Wikipedia took the concept and made it famous, but also swallowed the word's meaning. Here the author borrows only the structural idea: interlinked pages, each covering one topic, with an index. The "anyone can edit" part is replaced by "the AI edits, you read." When you see wiki/ as a folder name, think "my organized knowledge pages."
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Web Scraping</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="Automatic copy-paste from the internet. A program visits a website, grabs the text, and saves it as a file — so you don't have to do it by hand. The author shows you a specific tool for this in Section 3.">
+            When the article says "web scraping," it means sending a program to a website to automatically grab the text and bring it back. Instead of you copy-pasting an article by hand, a tool visits the page for you, reads it, and saves the content as a file. The author introduces a specific tool for this in Section 3.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              Web scraping is any automated process that extracts content from websites. It can range from simple (grab all the text on a page) to complex (log in, click through menus, scroll to load content, then extract). The tool the author recommends — agent-browser — handles the complex cases so you don't have to. You'll set this up later in the article; for now just know it means "automatic copy-paste from the internet."
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">CLI (Command Line Interface)</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="Just another name for the terminal above. CLI = 'command line interface.' When the article says 'one CLI tool,' it means a program you control by typing instead of clicking.">
+            CLI is shorthand for "command line interface" — another name for the terminal mentioned above. When the article says "one CLI tool," it means a program you use by typing commands in that text-based interface instead of clicking buttons.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              CLI tools are programs designed to be used from the terminal. Instead of opening an app with a window and buttons, you type a command like <code>agent-browser open https://example.com</code>. Most developer tools are CLI-based because it's faster and easier to automate. The article uses several CLI tools — you'll encounter them starting in Section 3.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Schema</span>
+            <span class="entry-type">meaning divergence</span>
+          </div>
+          <div class="scaffold" data-conv="It's the instruction manual for the AI. Here, 'schema' means a single text file that tells the AI what your knowledge base is about and how to organize it. You'll create this file in Section 4.">
+            In everyday English, a schema is just a plan or blueprint. In this article, the author uses it to mean a single file that contains the rules and structure for how your knowledge base should be organized — like an instruction manual that tells the AI what goes where. You'll create this file in Section 4.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              In formal CS, "schema" often means a rigid structural definition (like a database schema that specifies exactly what fields a table has). Here the author uses it more loosely — it's a markdown file with guidelines, not a strict technical definition. Don't overthink it: it's a set of instructions in a text file.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Compile</span>
+            <span class="entry-type">meaning divergence</span>
+          </div>
+          <div class="scaffold" data-conv="Gather up your mess and organize it. That's all 'compile' means here — tell the AI to take your raw notes and assemble them into organized articles. Not the programming meaning. You'll do this in Section 5.">
+            In everyday English, "compile" means to gather and assemble things together. That's exactly how the author uses it here — telling the AI to take your raw notes and assemble them into an organized wiki. This is <em>not</em> the formal CS meaning (translating code into machine language). You'll do this step in Section 5.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              In programming, "compile" has a very specific meaning: converting human-readable code into machine code that a computer can execute. The author is deliberately using the everyday meaning — gather, organize, assemble. This is a common meaning divergence trap in tech articles where a word has both a casual and a technical meaning. Here, it's the casual one.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+      </div>
+    </details>
+  </div>
+
+  <div class="article-panel">
+    <p><strong>Nick Spisak (@NickSpisak_)</strong></p>
+    <h2>How to Build Your Second Brain</h2>
+    <p>@karpathy dropped a post describing how he uses AI to build personal knowledge bases. The idea is simple: instead of keeping notes scattered across apps, you dump everything into one folder. Then you tell your AI to organize all of it into a personal <span class="gargon-term" title="GARGON: Not Wikipedia — an organized folder of linked text files, each covering one topic, maintained by the AI" data-conv-title="GARGON: Not Wikipedia — a folder of organized notes the AI keeps for you">wiki</span> - summaries, connections, articles - that gets smarter every time you use it.</p>
+    <p>No special software. No database. Just folders and text files.</p>
+    <p>In under 7 minutes you'll learn:</p>
+    <ol>
+      <li>The exact folder structure to set up (takes 2 minutes)</li>
+      <li>How to automate <span class="gargon-term" title="GARGON: Sending a program to a website to automatically grab the text and bring it back" data-conv-title="GARGON: Automatic copy-paste from the internet">web scraping</span> into your knowledge base with one <span class="gargon-term" title="GARGON: A program you use by typing commands in the terminal instead of clicking buttons" data-conv-title="GARGON: A program you control by typing, not clicking">CLI</span> tool</li>
+      <li>The one-file "<span class="gargon-term" title="GARGON: A file that defines the rules and structure — like an instruction manual for the AI" data-conv-title="GARGON: The AI's instruction manual — a text file with the rules">schema</span>" that makes the whole system work</li>
+      <li>How to get your AI to <span class="gargon-term" title="GARGON: Used here in the everyday sense — gather and assemble, not the formal CS meaning" data-conv-title="GARGON: Just means 'gather and organize' here — not the programming meaning">compile</span> raw notes into an organized wiki</li>
+      <li>The compounding trick that makes it smarter every time you use it</li>
+      <li>The health check that catches mistakes before they pile up</li>
+    </ol>
+    <h2>1. Create Three Folders (2 Minutes)</h2>
+    <p>Open your <span class="gargon-term" title="GARGON: A text-only remote control for your computer — type commands instead of clicking" data-conv-title="GARGON: Text-only remote control for your computer">terminal</span> or file explorer. Create a project folder anywhere on your computer. Inside it, create three subfolders:</p>
+<pre>my-knowledge-base/
+  raw/          (your source material - articles, notes, screenshots)
+  <span class="gargon-term" title="GARGON: Not Wikipedia — a folder of organized, linked text files the AI maintains for you" data-conv-title="GARGON: Not Wikipedia — a folder of organized notes the AI keeps for you">wiki/</span>         (where your AI will write the organized version)
+  outputs/      (answers, reports, and research your AI generates)</pre>
+    <p>That's it. This is the same structure @karpathy uses. The raw/ folder is your junk drawer of source material. The wiki/ folder is where the AI turns that mess into something organized. The outputs/ folder is where answers to your questions live.</p>
+    <p>No apps to install. No accounts to create. Three folders.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2: FILL YOUR RAW FOLDER            -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-row">
+  <div class="gargon-sidebar no-context">
+    <div class="section-label">Section 2</div>
+    <div class="no-context-msg">No extra context needed here.</div>
+  </div>
+
+  <div class="article-panel">
+    <h2>2. Fill Your Raw Folder (10 Minutes)</h2>
+    <p>This is where most people stall. They create the folders and then stare at an empty raw/ directory wondering what to put in it.</p>
+    <p>The answer: everything. Copy-paste articles into <span class="gargon-term" title="GARGON: Plain text files with formatting shortcuts — like .txt but with # for headings and * for bold" data-conv-title="GARGON: Just a text file with simple formatting shortcuts">.md</span> or .txt files. Save screenshots or diagrams as images. Export notes from whatever app you use now. Paste in meeting notes, research papers, project docs. Dump in bookmarks you've been hoarding for months.</p>
+    <p>Don't organize it. Don't rename anything. Don't clean it up. That's the AI's job.</p>
+    <p>I keep 17 raw source files across my X content pipeline - clipped articles, competitor breakdowns, analytics reports. None of it is organized by hand.</p>
+    <p>But Karpathy didn't mention the part that actually speeds this up: automated collection.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3: AUTOMATE WITH AGENT BROWSER     -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-row">
+  <div class="gargon-sidebar">
+    <div class="section-label">Section 3 · GARGON Context</div>
+    <details class="mini-report">
+      <summary>
+        6 concepts: 3 terms, 1 meaning divergence, 2 notation
+        <span class="report-stats">· Need-to-read <span class="need-score need-5">5/5</span></span>
+      </summary>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">CLI Tool</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="A program you control by typing, not clicking. 'Agent-browser' is a CLI tool — you install it and use it by typing commands in the terminal, not by opening an app with buttons.">
+            A CLI tool is any program you use by typing commands in the terminal instead of clicking buttons in a window. "Agent-browser" in this section is a CLI tool — you install it and use it by typing commands, not by opening an app.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              CLI stands for Command Line Interface. Most tools you use have a GUI (Graphical User Interface) — windows, buttons, menus. CLI tools skip all of that. You type a command, hit enter, and it does the thing. Developers prefer CLI tools because they're faster, can be automated, and can be chained together.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">npm install</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="It's an app store for developer tools, but you type instead of click. 'npm install -g agent-browser' means 'download and install agent-browser.' The -g means 'install it so I can use it from anywhere.'">
+            <code>npm install -g agent-browser</code> is a command to download and install a tool. Think of npm as an app store for developer tools, except instead of clicking "download," you type the name of what you want. The <code>-g</code> means "install this so I can use it from anywhere."
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              npm stands for Node Package Manager. It lets you download tools and code libraries that other developers have built and shared. The <code>-g</code> flag means "global" — install it system-wide rather than just in the current folder. To use npm, you first need to install Node.js — a platform for running JavaScript outside of a web browser. This is one step the article glosses over.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Web Scraping</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="Automatic copy-paste from the internet. A program visits the website, reads it, and saves the text for you. Agent-browser does this — opens websites and pulls article text straight into your raw/ folder.">
+            Web scraping means sending a program to a website to automatically grab the text and bring it back. Instead of you visiting, reading, and copy-pasting, the program does it for you. Agent-browser is the scraper here — it opens websites and pulls article text into your raw/ folder.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              The reason the author emphasizes agent-browser specifically is that many websites load content dynamically using JavaScript — the page looks blank at first and content appears as code runs. Simple copy-paste or basic scraping tools fail here. Agent-browser controls an actual browser, so it sees the page exactly as you would, handling scrolling, "load more" buttons, and login pages.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Token (technical meaning)</span>
+            <span class="entry-type">meaning divergence</span>
+          </div>
+          <div class="scaffold" data-conv="The AI's budget. A token is a small chunk of text (roughly one word) that the AI processes as one unit. '82% fewer tokens' means agent-browser is way cheaper to run — uses less budget per page, so you can scrape more.">
+            You know "token" as a coin substitute. When this article says "82% fewer tokens," it means: a token is a small chunk of text (roughly a word) that an AI processes as one unit. Fewer tokens = the AI can do more work within its limits. It's like the AI has a budget, and tokens are the currency.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              AI models break text into tokens — pieces that might be a whole word, part of a word, or punctuation. Every AI interaction has a token limit — a maximum budget. The more tokens a task uses, the more it costs and the less room there is for the AI to work. "82% fewer tokens than Playwright MCP" means agent-browser is dramatically more efficient — it spends less of the budget on scraping, leaving more for other tasks.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Terminal Commands</span>
+            <span class="entry-type">notation</span>
+          </div>
+          <div class="scaffold" data-conv="Each line in the gray boxes is one instruction you type and hit enter. First one downloads the tool, second sets it up, then you can open pages and grab text. 'Pipe' just means sending that text straight into a file.">
+            The gray code blocks are commands you'd type in the terminal, one at a time: <code>npm install -g agent-browser</code> downloads the tool. <code>agent-browser install</code> sets up a browser. <code>agent-browser open [url]</code> visits a page. <code>agent-browser get text "article"</code> grabs the text. "Pipe" means redirecting that text into a file.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              Terminal commands follow a pattern: the first word is the program name, everything after tells it what to do. So <code>agent-browser open https://...</code> means "run agent-browser and tell it to open this URL." "Piping" (using the | symbol) redirects output — instead of text appearing on screen, it gets saved into a file. This is how scraped content ends up in your raw/ folder automatically.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">GitHub Stars / Playwright MCP</span>
+            <span class="entry-type">notation</span>
+          </div>
+          <div class="scaffold" data-conv="It's a trust signal — like 26,000 upvotes. GitHub is where developers share code, 'stars' are bookmarks. Playwright MCP is just another tool that does the same thing worse. The author only mentions them to say 'agent-browser wins.'">
+            "26K+ GitHub stars" is a popularity metric — GitHub is where developers share code, and "stars" are like upvotes. Playwright MCP is just another tool that does a similar job but less efficiently. The author mentions it only to show agent-browser is the better option.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              GitHub is the largest platform for sharing code. Playwright is a browser automation tool by Microsoft, and MCP (Model Context Protocol) is a way to connect AI tools to external capabilities. The author's point is narrow: agent-browser does the same job with far fewer tokens. You don't need to understand either tool — this is just a comparison to justify the recommendation.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+      </div>
+    </details>
+  </div>
+
+  <div class="article-panel">
+    <h2>3. Automate Source Collection With Agent Browser (Optional But Powerful)</h2>
+    <p>Vercel Labs just shipped agent-browser - a free <span class="gargon-term" title="GARGON: A program you use by typing commands in the terminal instead of clicking buttons" data-conv-title="GARGON: A program you control by typing, not clicking">CLI tool</span> that lets your AI agent control a real browser. <span class="gargon-term" title="GARGON: GitHub is where developers share code; stars are like upvotes — 26K means widely trusted" data-conv-title="GARGON: Trust signal — like 26K upvotes from developers">26K+ GitHub stars</span>. Two commands to install:</p>
+<pre><span class="gargon-term" title="GARGON: Think of npm as an app store for developer tools — you type what you want instead of clicking download" data-conv-title="GARGON: App store for dev tools — type instead of click">npm install -g agent-browser</span>
+agent-browser install</pre>
+    <p>That second command downloads a dedicated Chrome browser. Now your AI can <span class="gargon-term" title="GARGON: Sending a program to a website to automatically grab the text and bring it back" data-conv-title="GARGON: Automatic copy-paste from the internet">scrape</span> any webpage, extract the text, and save it directly into your raw/ folder.</p>
+    <p>Here's what that looks like in practice:</p>
+<pre>agent-browser open https://some-article-you-want.com
+agent-browser get text "article"</pre>
+    <p>That's it. The AI opens the page, grabs the article text, and you pipe it into a file in raw/. No manual copy-paste. No browser extensions.</p>
+    <p>Agent-browser handles pages that copy-paste can't touch. JavaScript-heavy sites that load content dynamically. Pages behind logins. Research papers with interactive figures. Anything that requires scrolling, clicking "load more," or navigating through menus before the content appears.</p>
+    <p>The tool uses 82% fewer <span class="gargon-term" title="GARGON: In AI, a token is a chunk of text the system processes as one unit — fewer tokens means the AI can do more within its budget" data-conv-title="GARGON: The AI's budget — fewer tokens = more room to work">tokens</span> than <span class="gargon-term" title="GARGON: Another browser automation tool — mentioned only to show agent-browser is more efficient" data-conv-title="GARGON: Another tool — only mentioned to say agent-browser is better">Playwright MCP</span>, which means your AI agent can scrape 5-6x more pages within the same session. I use it to pull competitor articles, trending threads, and research docs directly into my pipeline without ever opening a browser myself.</p>
+    <p>For your knowledge base, the workflow is simple: find an article you want, tell your AI "scrape this URL and save it to raw/", and agent-browser handles the rest. Your raw/ folder fills itself.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 4: WRITE YOUR SCHEMA FILE          -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-row">
+  <div class="gargon-sidebar">
+    <div class="section-label">Section 4 · GARGON Context</div>
+    <details class="mini-report">
+      <summary>
+        2 concepts: 1 cross-domain transfer, 1 notation
+        <span class="report-stats">· Need-to-read <span class="need-score need-3">3/5</span></span>
+      </summary>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Schema (technical meaning)</span>
+            <span class="entry-type">cross-domain transfer</span>
+          </div>
+          <div class="scaffold" data-conv="It's the instruction manual for the AI. This 'schema file' is just a text document that says 'here's what this knowledge base is about, and here are the rules for organizing it.' That's it — instructions in a text file.">
+            You might know "schema" from psychology — a mental framework for organizing information. In tech it means almost the same thing: a file that defines the rules and structure for how a system should handle data. Here, the "schema file" is a text document that tells the AI "here's what this knowledge base is about and here are the rules." It's an instruction manual.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              In databases and programming, a schema is a formal blueprint — it defines what kinds of data exist, how they relate, and what rules they follow. The article uses "schema" loosely. The CLAUDE.md file isn't a formal database schema — it's more like a style guide. But the concept is the same: define structure up front so the AI organizes things consistently. The filename doesn't matter — the content does.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Markdown Template</span>
+            <span class="entry-type">notation</span>
+          </div>
+          <div class="scaffold" data-conv="A fill-in-the-blanks template you copy into a text file. # makes headings, - makes bullet points, [[topic-name]] tells the AI to connect related pages. Replace the [YOUR TOPIC] parts with your own stuff.">
+            The large gray block is a template you'd copy into a text file. The # symbols create headings (more # = smaller). The - symbols create bullet points. [[topic-name]] is a wiki convention for linking between pages — the AI uses these to connect related articles. The [YOUR TOPIC] parts are placeholders you'd replace with your own content.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              The [[double bracket]] format comes from wiki systems like Wikipedia's internal linking. It says "this topic connects to that topic." The AI uses these to build a web of connected articles. INDEX.md is meant to be a table of contents — one file listing every topic with a short description. Think of it like the index at the back of a textbook.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+      </div>
+    </details>
+  </div>
+
+  <div class="article-panel">
+    <h2>4. Write Your Schema File (5 Minutes)</h2>
+    <p>This is the part most people will skip. Don't.</p>
+    <p>Create a file in the root of your project called CLAUDE.md (or AGENTS.md or README.md - the name doesn't matter, the content does). This file tells your AI what the knowledge base is about and how to organize it.</p>
+    <p>Here's a starter template you can copy right now:</p>
+<pre># Knowledge Base <span class="gargon-term" title="GARGON: A file that defines the rules and structure — like an instruction manual for the AI" data-conv-title="GARGON: The AI's instruction manual — a text file with the rules">Schema</span>
+
+## What This Is
+A personal knowledge base about [YOUR TOPIC].
+
+## How It's Organized
+- raw/ contains unprocessed source material. Never modify these files.
+- wiki/ contains the organized wiki. AI maintains this entirely.
+- outputs/ contains generated reports, answers, and analyses.
+
+## Wiki Rules
+- Every topic gets its own <span class="gargon-term" title="GARGON: Plain text files with formatting shortcuts" data-conv-title="GARGON: Just text files">.md</span> file in wiki/
+- Every wiki file starts with a one-paragraph summary
+- Link related topics using <span class="gargon-term" title="GARGON: Wiki linking convention — tells the AI to connect related pages" data-conv-title="GARGON: Tells the AI to link related pages together">[[topic-name]]</span> format
+- Maintain an INDEX.md in wiki/ that lists every topic
+- When new raw sources are added, update the relevant wiki articles
+
+## My Interests
+[List 3-5 things you want this knowledge base to focus on]</pre>
+    <p>@karpathy confirmed he keeps his schema "super simple and flat" in an AGENTS.md file. No database. No plugin. Just a text file that tells the AI the rules.</p>
+    <p>This is the equivalent of what I use CLAUDE.md for across every project. It's the AI's instruction manual for your specific knowledge base.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 5: COMPILE THE WIKI                -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-row">
+  <div class="gargon-sidebar">
+    <div class="section-label">Section 5 · GARGON Context</div>
+    <details class="mini-report">
+      <summary>
+        2 concepts: 1 term, 1 meaning divergence
+        <span class="report-stats">· Need-to-read <span class="need-score need-3">3/5</span></span>
+      </summary>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Claude Code / Cursor / AI Coding Tools</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="AI that can actually touch your files. Unlike ChatGPT in a browser, these tools run on your computer and can read, create, and edit files directly. That file access is what makes this whole system work.">
+            These are programs that let an AI read and work with files on your computer. Claude Code runs in the terminal. Cursor is a code editor with AI built in. The key distinction: unlike regular ChatGPT or Claude in a browser, these tools can actually see and modify your folders. That's what makes this system possible.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              When you chat with AI in a browser, it can only work with what you paste in. AI coding tools run locally and have permission to read and write files directly — the AI reads everything in raw/, writes organized articles into wiki/, and creates outputs. Without file access, you'd copy-paste everything manually, defeating the purpose. VS Code (mentioned later) is another code editor that can be extended with AI.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Compile (technical meaning)</span>
+            <span class="entry-type">meaning divergence</span>
+          </div>
+          <div class="scaffold" data-conv="'Read my mess and organize it.' That's all compile means here — tell the AI to take raw material and assemble it into organized wiki articles. Not the programming meaning.">
+            You know "compile" as "gather and assemble" — that's exactly how it's used here. Tell the AI to read raw material and assemble it into organized wiki articles. In programming "compile" has a more specific meaning (translating code), but this article uses the everyday sense.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              In formal CS, compiling means translating human-readable code into machine-executable code. The author borrows the word loosely: take raw inputs, process them, produce structured outputs. If you encounter "compile" in a more technical article later, it will mean something more specific. Here it just means "organize my mess into something useful."
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+      </div>
+    </details>
+  </div>
+
+  <div class="article-panel">
+    <h2>5. Tell Your AI to <span class="gargon-term" title="GARGON: Used here in the everyday sense — gather and assemble, not the formal CS meaning" data-conv-title="GARGON: Just means 'gather and organize' here — not the programming meaning">Compile</span> the Wiki (15 Minutes)</h2>
+    <p>Open <span class="gargon-term" title="GARGON: Programs that let AI read and work with files on your computer — unlike browser-based AI, these can see your folders" data-conv-title="GARGON: AI that can actually touch your files — unlike browser chat">Claude Code</span> (or <span class="gargon-term" title="GARGON: A code editor with AI built in" data-conv-title="GARGON: Code editor with AI built in">Cursor</span>, or any AI coding tool that can read your files). Point it at your project folder and say:</p>
+    <p>"Read everything in raw/. Then compile a wiki in wiki/ following the rules in CLAUDE.md. Create an INDEX.md first, then create one .md file per major topic. Link related topics. Summarize every source."</p>
+    <p>Then step away. Let it work.</p>
+    <p>When it's done, you'll have a wiki/ folder full of organized articles - connections you didn't see, summaries of things you forgot you saved, and an index file that makes everything searchable in seconds.</p>
+    <p>The important thing: you don't edit the wiki by hand. That's the AI's job. You read it, you ask questions against it, and the AI keeps it updated.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 6: ASK QUESTIONS                   -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-row">
+  <div class="gargon-sidebar no-context">
+    <div class="section-label">Section 6</div>
+    <div class="no-context-msg">No extra context needed here.</div>
+  </div>
+
+  <div class="article-panel">
+    <h2>6. Ask Questions and Save the Answers (Ongoing)</h2>
+    <p>Once your wiki has 10+ articles, start asking questions:</p>
+    <p>"Based on everything in wiki/, what are the three biggest gaps in my understanding of [topic]?"</p>
+    <p>"Compare what source A says about [concept] vs what source B says. Where do they disagree?"</p>
+    <p>"Write me a 500-word briefing on [topic] using only what's in this knowledge base."</p>
+    <p>The AI reads across your entire wiki and gives you answers grounded in your own collected material.</p>
+    <p>Save those answers back into the knowledge base. Drop the output into outputs/ or have the AI update the relevant wiki article with the new insight. Every question makes the next answer better. That's the loop.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 7: HEALTH CHECK                    -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-row">
+  <div class="gargon-sidebar">
+    <div class="section-label">Section 7 · GARGON Context</div>
+    <details class="mini-report">
+      <summary>
+        1 concept: 1 analogy
+        <span class="report-stats">· Need-to-read <span class="need-score need-2">2/5</span></span>
+      </summary>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Error Compounding</span>
+            <span class="entry-type">analogy</span>
+          </div>
+          <div class="scaffold" data-conv="Small mistakes snowball. Like logging your squat at 225 when it was 215 — every future cycle builds on the wrong number and progression drifts. Same thing here: if the AI writes something slightly wrong and you save it back, errors compound. The health check catches that drift.">
+            Think about progressive overload in training. If you log your max squat wrong — say 225 when it was actually 215 — every future cycle builds on that wrong number. Weights get miscalculated, progression drifts. That's what happens when AI outputs with small errors get saved back into the knowledge base: errors compound. The health check is like a form check — periodically verifying the foundation is solid.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              In AI, this is sometimes called "model collapse" or "feedback loops" — the system drifts from reality because it builds on its own imperfect outputs. The health check is a manual intervention: ask the AI to audit itself, flag contradictions, and identify unsupported claims. It's not perfect (the AI checking its own work has limitations), but it catches obvious drift before it compounds.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+      </div>
+    </details>
+  </div>
+
+  <div class="article-panel">
+    <h2>7. Run a Health Check (Monthly)</h2>
+    <p>Tell your AI:</p>
+    <p>"Review the entire wiki/ directory. Flag any contradictions between articles. Find topics mentioned but never explained. List any claims that aren't backed by a source in raw/. Suggest 3 new articles that would fill gaps."</p>
+    <p>One of the best replies to Karpathy's post came from @HFloyd: "When outputs get filed back, errors compound too." That's real. If the AI writes something slightly wrong and you save it back, the next answer builds on that wrong thing.</p>
+    <p>The fix is simple: run periodic health checks.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 8: YOU DON'T NEED OBSIDIAN         -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-row">
+  <div class="gargon-sidebar">
+    <div class="section-label">Section 8 · GARGON Context</div>
+    <details class="mini-report">
+      <summary>
+        1 concept: 1 term
+        <span class="report-stats">· Need-to-read <span class="need-score need-1">1/5</span></span>
+      </summary>
+      <div class="entries">
+
+        <div class="entry">
+          <div class="entry-header">
+            <span class="entry-name">Obsidian / Notion / VS Code</span>
+            <span class="entry-type">term</span>
+          </div>
+          <div class="scaffold" data-conv="You don't need any of these — that's the author's whole point. Obsidian is a note-taking app, Notion is a workspace app, VS Code is a code editor. He name-drops them only to say plain folders and text files work just as well.">
+            Several tool names get dropped without explanation. Obsidian is a note-taking app known for linking notes together. Notion is a workspace app for notes, projects, and databases. VS Code is a code editor by Microsoft. The author's point: you <em>don't</em> need any of them. Plain folders and text files work just as well.
+          </div>
+          <details class="depth-toggle">
+            <summary>More depth</summary>
+            <div class="depth-content">
+              The "Notion trap" is a real pattern: spending more time configuring tools than using them. Obsidian is genuinely powerful — it visualizes note connections as a graph — but the author argues a folder of .md files achieves 90% of the result with no setup overhead. The thesis: the AI is the organizing layer, not the app.
+            </div>
+          </details>
+          <div class="feedback-buttons">
+            <button>A · Lost</button>
+            <button>B · Example</button>
+            <button>C · Got it</button>
+          </div>
+        </div>
+
+      </div>
+    </details>
+  </div>
+
+  <div class="article-panel">
+    <h2>8. You Don't Need <span class="gargon-term" title="GARGON: A note-taking app popular for linking notes — but the author says you don't need it" data-conv-title="GARGON: Note-taking app — the author says you don't need it">Obsidian</span> (But You Can Use It)</h2>
+    <p>Half the replies to Karpathy's post were people pitching Obsidian plugins. Lex Fridman uses Obsidian + Cursor. There are already three startups building dedicated tools for this.</p>
+    <p>But here's what Karpathy actually said when someone asked about his setup: "I'm trying to keep it super simple and flat. It's just a nested directory of .md files."</p>
+    <p>A folder of text files and a schema file is the entire product.</p>
+    <p>I run my whole knowledge system from the <span class="gargon-term" title="GARGON: Text-only remote control for your computer — type commands instead of clicking" data-conv-title="GARGON: Text-only remote control for your computer">terminal</span> with <span class="gargon-term" title="GARGON: Anthropic's AI tool that runs in the terminal and can read/write your files" data-conv-title="GARGON: AI tool that can read and edit your files directly">Claude Code</span>. You could use <span class="gargon-term" title="GARGON: A code editor by Microsoft" data-conv-title="GARGON: Code editor by Microsoft">VS Code</span>. You could use <span class="gargon-term" title="GARGON: A note-taking app known for linking notes together" data-conv-title="GARGON: Note-taking app — you don't need it">Obsidian</span>. You could use Notepad. The AI doesn't care what app you open the files in. What matters is the folder structure and the schema.</p>
+    <p>Obsidian with 47 plugins is the <span class="gargon-term" title="GARGON: A workspace app for notes and projects — the 'trap' is spending more time configuring than using it" data-conv-title="GARGON: Workspace app — the trap is configuring it forever">Notion</span> trap all over again. You spend more time configuring the tool than using the knowledge base. Flat files and a good schema will outperform a fancy tool stack 90% of the time. I've watched it happen across dozens of client setups.</p>
+    <p>Stop shopping for the perfect tool. Start building.</p>
+    <p>That's the full system. Three folders, one schema file, a browser scraper, and an AI that maintains everything.</p>
+    <p>41K people bookmarked Karpathy's post. The difference between bookmarking it and benefiting from it is one weekend of setup.</p>
+    <p>Pick your topic. Create the folders. Drop in what you already have. Let the AI do the rest.</p>
+  </div>
+</div>
+
+<div class="gargon-footer">
+  Generated by GARGON — Guided Adaptive Reduction of Gaps in Operational Needs<br>
+  Profile: Michael · Generated: April 6, 2026 · 19 bridging concepts across 8 sections
+</div>
+
+<script>
+// Feedback buttons
+document.querySelectorAll('.feedback-buttons button').forEach(btn => {
+  btn.addEventListener('click', function() {
+    this.parentElement.querySelectorAll('button').forEach(b => {
+      b.classList.remove('active-a', 'active-b', 'active-c');
+    });
+    const type = this.textContent.trim().charAt(0).toLowerCase();
+    this.classList.add('active-' + type);
+  });
+});
+
+// Tone toggle — Plain Speak mode
+const toneCheckbox = document.getElementById('tone-checkbox');
+const labelStandard = document.getElementById('tone-label-standard');
+const labelConv = document.getElementById('tone-label-conv');
+const scaffolds = document.querySelectorAll('.scaffold[data-conv]');
+const gargonTerms = document.querySelectorAll('.gargon-term[data-conv-title]');
+
+// Store formal text and titles on load
+scaffolds.forEach(el => {
+  el.dataset.formal = el.innerHTML;
+});
+gargonTerms.forEach(el => {
+  el.dataset.formalTitle = el.getAttribute('title');
+});
+
+toneCheckbox.addEventListener('change', function() {
+  const isConv = this.checked;
+  document.body.classList.toggle('conv-mode', isConv);
+
+  // Update label colors (text stays fixed)
+  labelStandard.style.color = isConv ? '#aaa' : '#2c5f2d';
+  labelStandard.style.fontWeight = isConv ? '400' : '600';
+  labelConv.style.color = isConv ? '#c2185b' : '#aaa';
+  labelConv.style.fontWeight = isConv ? '600' : '400';
+
+  // Swap scaffold text
+  scaffolds.forEach(el => {
+    el.innerHTML = isConv ? el.dataset.conv : el.dataset.formal;
+  });
+
+  // Swap hover tooltips on article terms
+  gargonTerms.forEach(el => {
+    el.setAttribute('title', isConv ? el.dataset.convTitle : el.dataset.formalTitle);
+  });
+});
+</script>
+
+</body>
+</html>
